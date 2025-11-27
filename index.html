@@ -5,7 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invitation Card Creator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&family=Poppins:wght@300;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
+        /* --- RESET & GLOBAL --- */
         * {
             margin: 0;
             padding: 0;
@@ -14,10 +21,12 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f2f5;
             min-height: 100vh;
+            color: #333;
         }
 
+        /* --- YOUR EXISTING HEADER STYLES (Preserved) --- */
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -25,7 +34,6 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
         .header-container {
@@ -52,12 +60,7 @@
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            transition: transform 0.3s ease;
-        }
-
-        .logo-icon:hover {
-            transform: rotate(10deg) scale(1.05);
+            color: white;
         }
 
         .logo h1 {
@@ -65,7 +68,6 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             font-weight: 700;
         }
 
@@ -78,30 +80,12 @@
         nav a {
             color: #333;
             text-decoration: none;
-            font-size: 1rem;
             font-weight: 500;
-            position: relative;
-            padding: 8px 0;
-            transition: color 0.3s ease;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s ease;
+            transition: 0.3s;
         }
 
         nav a:hover {
             color: #667eea;
-        }
-
-        nav a:hover::after {
-            width: 100%;
         }
 
         .cta-button {
@@ -111,17 +95,8 @@
             border-radius: 25px;
             font-weight: 600;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .cta-button::after {
-            display: none;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            color: white !important;
+            cursor: pointer;
+            border: none;
         }
 
         .menu-toggle {
@@ -129,104 +104,382 @@
             flex-direction: column;
             gap: 6px;
             cursor: pointer;
-            padding: 10px;
         }
 
         .menu-toggle span {
             width: 28px;
             height: 3px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(8px, -8px);
         }
 
         @media (max-width: 768px) {
-            .header-container {
-                padding: 15px 20px;
-            }
-
-            .logo h1 {
-                font-size: 1.3rem;
-            }
-
-            .logo-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
-            }
-
             .menu-toggle {
                 display: flex;
             }
 
             nav {
+                display: none;
                 position: absolute;
                 top: 100%;
                 left: 0;
-                right: 0;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(10px);
+                width: 100%;
+                background: white;
                 flex-direction: column;
-                gap: 0;
                 padding: 20px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             }
 
             nav.active {
-                max-height: 400px;
-            }
-
-            nav a {
-                padding: 15px 10px;
-                width: 100%;
-                text-align: center;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            }
-
-            nav a:last-child {
-                border-bottom: none;
-            }
-
-            .cta-button {
-                margin-top: 10px;
+                display: flex;
             }
         }
 
-        /* Demo content */
-        .demo-content {
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 40px 30px;
-            text-align: center;
-            color: white;
+        /* --- APP CONTAINER --- */
+        .app-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
         }
 
-        .demo-content h2 {
-            font-size: 3rem;
+        /* --- LEFT: FORM SECTION --- */
+        .editor-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .editor-panel h2 {
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            color: #444;
+        }
+
+        .form-group {
             margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .demo-content p {
-            font-size: 1.3rem;
-            opacity: 0.95;
-            max-width: 600px;
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e4e8;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .design-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .design-option {
+            cursor: pointer;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .design-option img {
+            width: 100%;
+            height: 60px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .design-option span {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            padding: 3px;
+        }
+
+        .design-option.active {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        /* --- RIGHT: PREVIEW SECTION --- */
+        .preview-panel {
+            position: sticky;
+            top: 120px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-canvas {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 4/5;
             margin: 0 auto;
+            position: relative;
+            background: white;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        /* --- 5 DESIGN TEMPLATES --- */
+
+        /* Design 1: Classic Elegant (Gold/White) */
+        .template-1 {
+            background: #fffbf0;
+            border: 15px double #d4af37;
+            color: #333;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .template-1 .card-occasion {
+            color: #d4af37;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 1.2rem;
+        }
+
+        .template-1 .card-main-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            margin: 20px 0;
+            color: #1a1a1a;
+        }
+
+        .template-1 .divider {
+            height: 2px;
+            width: 50px;
+            background: #d4af37;
+            margin: 20px auto;
+        }
+
+        /* Design 2: Modern Dark (Black/Neon) */
+        .template-2 {
+            background: #111;
+            color: #fff;
+            border: 1px solid #333;
+            font-family: 'Montserrat', sans-serif;
+            background-image: radial-gradient(circle at top right, #333 0%, transparent 40%);
+        }
+
+        .template-2 .card-occasion {
+            color: #00ff88;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .template-2 .card-main-text {
+            font-weight: 300;
+            font-size: 2.5rem;
+            margin: 30px 0;
+            letter-spacing: -1px;
+        }
+
+        .template-2 .card-details {
+            border-left: 4px solid #00ff88;
+            padding-left: 20px;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            width: 100%;
+        }
+
+        /* Design 3: Floral/Soft (Pink/Green) */
+        .template-3 {
+            background: linear-gradient(180deg, #fff 0%, #fff0f5 100%);
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            border: 2px dashed #ffb7b2;
+        }
+
+        .template-3::before {
+            content: '🌸';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 2rem;
+        }
+
+        .template-3::after {
+            content: '🌿';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 2rem;
+        }
+
+        .template-3 .card-occasion {
+            color: #ff6b6b;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .template-3 .card-main-text {
+            font-family: 'Playfair Display', serif;
+            color: #2d3436;
+            font-size: 2.2rem;
+        }
+
+        /* Design 4: Royal Blue (Formal) */
+        .template-4 {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ecf0f1;
+            font-family: 'Cinzel', serif;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .template-4 .card-occasion {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .template-4 .card-main-text {
+            font-size: 2rem;
+            color: #ffd700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .template-4 .card-details {
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Design 5: Minimalist (Clean) */
+        .template-5 {
+            background: white;
+            color: #222;
+            font-family: 'Helvetica Neue', sans-serif;
+            text-align: left;
+            align-items: flex-start;
+            padding: 60px;
+        }
+
+        .template-5 .card-occasion {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            opacity: 0.1;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .template-5 .card-main-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-top: 40px;
+        }
+
+        .template-5 .card-details {
+            margin-top: auto;
+            border-top: 4px solid #000;
+            padding-top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- CARD TEXT ELEMENTS --- */
+        .card-occasion {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-subtext {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .card-main-text {
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .card-details {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 8px 0;
+            align-items: center;
+        }
+
+        .template-5 .detail-row {
+            justify-content: flex-start;
+        }
+
+        .detail-row i {
+            opacity: 0.7;
+        }
+
+        .card-message {
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-width: 80%;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-panel {
+                position: static;
+                order: -1;
+                margin-bottom: 40px;
+            }
+
+            .card-canvas {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -238,29 +491,129 @@
                 <div class="logo-icon">✉️</div>
                 <h1>Invitation Creator</h1>
             </div>
-
             <nav id="mainNav">
                 <a href="#create">Create</a>
                 <a href="#templates">Templates</a>
                 <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <a href="#start" class="cta-button">Get Started</a>
+                <button class="cta-button" onclick="document.getElementById('form-section').scrollIntoView()">Start
+                    Now</button>
             </nav>
-
             <div class="menu-toggle" id="menuToggle">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </div>
         </div>
     </header>
 
-    <div class="demo-content">
-        <h2>Create Beautiful Invitations</h2>
-        <p>Design stunning invitation cards for any occasion with our easy-to-use tools and gorgeous templates.</p>
+    <div class="app-container" id="form-section">
+
+        <div class="editor-panel">
+            <h2>1. Choose a Design</h2>
+            <div class="design-selector">
+                <div class="design-option active" onclick="setTemplate(1)" style="background: #fffbf0;">
+                    <span>Classic</span>
+                </div>
+                <div class="design-option" onclick="setTemplate(2)" style="background: #111;">
+                    <span>Modern</span>
+                </div>
+                <div class="design-option" onclick="setTemplate(3)" style="background: #fff0f5;">
+                    <span>Floral</span>
+                </div>
+                <div class="design-option" onclick="setTemplate(4)" style="background: #203a43;">
+                    <span>Royal</span>
+                </div>
+                <div class="design-option" onclick="setTemplate(5)" style="background: #fff;">
+                    <span>Minimal</span>
+                </div>
+            </div>
+
+            <h2>2. Enter Details</h2>
+            <form id="cardForm">
+                <div class="form-group">
+                    <label>Occasion (e.g., Birthday, Wedding)</label>
+                    <input type="text" id="inputOccasion" placeholder="Birthday Party" oninput="updateCard()">
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label>Host Name (From)</label>
+                        <input type="text" id="inputHost" placeholder="John Doe" oninput="updateCard()">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Guest/Honor Name (To)</label>
+                        <input type="text" id="inputGuest" placeholder="Jane Smith" oninput="updateCard()">
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label>Date</label>
+                        <input type="date" id="inputDate" oninput="updateCard()">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Time</label>
+                        <input type="time" id="inputTime" oninput="updateCard()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Venue / Location</label>
+                    <input type="text" id="inputLocation" placeholder="123 Party Lane, NY" oninput="updateCard()">
+                </div>
+
+                <div class="form-group">
+                    <label>Personal Message / RSVP</label>
+                    <textarea id="inputMessage" rows="3" placeholder="Join us for a night of fun! RSVP by Friday."
+                        oninput="updateCard()"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview-header">
+                <h2>Live Preview</h2>
+                <button class="cta-button" onclick="downloadCard()" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download Card
+                </button>
+            </div>
+
+            <div id="captureArea" class="card-canvas template-1">
+                <div class="card-occasion" id="cardOccasion">BIRTHDAY PARTY</div>
+                <div class="card-subtext">YOU ARE CORDIALLY INVITED BY</div>
+                <div class="card-subtext" style="font-weight: bold;" id="cardHost">John Doe</div>
+
+                <div class="divider"></div>
+
+                <div class="card-subtext">CELEBRATING</div>
+                <div class="card-main-text" id="cardGuest">Jane Smith</div>
+
+                <div class="card-details">
+                    <div class="detail-row">
+                        <i class="far fa-calendar-alt"></i>
+                        <span id="cardDate">Oct 24, 2025</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="far fa-clock"></i>
+                        <span id="cardTime">7:00 PM</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="cardLocation">123 Party Lane, NY</span>
+                    </div>
+                </div>
+
+                <div class="card-message" id="cardMessage">
+                    "Join us for a night of fun! RSVP by Friday."
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 15px; color: #888; font-size: 0.9rem;">
+                Fill the form to see changes instantly.
+            </p>
+        </div>
     </div>
 
     <script>
+        // --- MOBILE MENU LOGIC (From your original code) ---
         const menuToggle = document.getElementById('menuToggle');
         const mainNav = document.getElementById('mainNav');
 
@@ -269,22 +622,69 @@
             mainNav.classList.toggle('active');
         });
 
-        // Close menu when clicking on a link
-        const navLinks = mainNav.querySelectorAll('a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                menuToggle.classList.remove('active');
-                mainNav.classList.remove('active');
-            });
-        });
+        // --- CARD GENERATOR LOGIC ---
 
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('header')) {
-                menuToggle.classList.remove('active');
-                mainNav.classList.remove('active');
-            }
-        });
+        // 1. Update Card Content in Real-time
+        function updateCard() {
+            // Get values
+            const occasion = document.getElementById('inputOccasion').value || 'EVENT NAME';
+            const host = document.getElementById('inputHost').value || 'Host Name';
+            const guest = document.getElementById('inputGuest').value || 'Guest Name';
+            const date = document.getElementById('inputDate').value || '2025-01-01';
+            const time = document.getElementById('inputTime').value || '12:00';
+            const location = document.getElementById('inputLocation').value || 'Location Address';
+            const message = document.getElementById('inputMessage').value || 'Your custom message here.';
+
+            // Format Date nicely
+            const dateObj = new Date(date);
+            const dateString = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Set content
+            document.getElementById('cardOccasion').innerText = occasion;
+            document.getElementById('cardHost').innerText = host;
+            document.getElementById('cardGuest').innerText = guest;
+            document.getElementById('cardDate').innerText = date !== '2025-01-01' ? dateString : 'Date';
+            document.getElementById('cardTime').innerText = time;
+            document.getElementById('cardLocation').innerText = location;
+            document.getElementById('cardMessage').innerText = `"${message}"`;
+        }
+
+        // 2. Change Template Design
+        function setTemplate(id) {
+            const card = document.getElementById('captureArea');
+            // Remove old classes
+            card.className = 'card-canvas';
+            // Add new class
+            card.classList.add(`template-${id}`);
+
+            // Update UI for selected option
+            document.querySelectorAll('.design-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelectorAll('.design-option')[id - 1].classList.add('active');
+        }
+
+        // 3. Download Logic
+        function downloadCard() {
+            const element = document.getElementById('captureArea');
+            const btn = document.getElementById('downloadBtn');
+
+            // UI Feedback
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            html2canvas(element, {
+                scale: 3, // High resolution
+                useCORS: true,
+                backgroundColor: null // Transparent logic handled by CSS
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'my-invitation.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                // Reset Button
+                btn.innerHTML = originalText;
+            });
+        }
     </script>
 </body>
 
